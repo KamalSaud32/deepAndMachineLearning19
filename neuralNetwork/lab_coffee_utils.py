@@ -79,17 +79,21 @@ def plt_layer(X,Y,W1,b1,norm_l):
     Y = Y.reshape(-1,)
     fig,ax = plt.subplots(1,W1.shape[1], figsize=(16,4))
     for i in range(W1.shape[1]):
-        layerf= lambda x : sigmoid(np.dot(norm_l(x),W1[:,i]) + b1[i])
+        def layerf(x, i=i):
+         xn = norm_l(x).numpy()
+         z = np.dot(xn, W1[:, i]) + b1[i]
+         return float(np.asarray(sigmoid(z)).squeeze())
+
         plt_prob(ax[i], layerf)
-        ax[i].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="Good Roast" )
-        ax[i].scatter(X[Y==0,0],X[Y==0,1], s=100, marker='o', facecolors='none', 
+    ax[i].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="Good Roast" )
+    ax[i].scatter(X[Y==0,0],X[Y==0,1], s=100, marker='o', facecolors='none', 
                    edgecolors=dlc["dldarkblue"],linewidth=1,  label="Bad Roast")
-        tr = np.linspace(175,260,50)
-        ax[i].plot(tr, (-3/85) * tr + 21, color=dlc["dlpurple"],linewidth=2)
-        ax[i].axhline(y= 12, color=dlc["dlpurple"], linewidth=2)
-        ax[i].axvline(x=175, color=dlc["dlpurple"], linewidth=2)
-        ax[i].set_title(f"Layer 1, unit {i}")
-        ax[i].set_xlabel("Temperature \n(Celsius)",size=12)
+    tr = np.linspace(175,260,50)
+    ax[i].plot(tr, (-3/85) * tr + 21, color=dlc["dlpurple"],linewidth=2)
+    ax[i].axhline(y= 12, color=dlc["dlpurple"], linewidth=2)
+    ax[i].axvline(x=175, color=dlc["dlpurple"], linewidth=2)
+    ax[i].set_title(f"Layer 1, unit {i}")
+    ax[i].set_xlabel("Temperature \n(Celsius)",size=12)
     ax[0].set_ylabel("Duration \n(minutes)",size=12)
     plt.show()
         
